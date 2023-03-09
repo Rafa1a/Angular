@@ -1,28 +1,44 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { catchError, Observable, of, tap } from 'rxjs';
 import { Produto } from './produto';
 
 @Injectable({
-  providedIn: 'root'
+ providedIn: 'root'
 })
 export class ProdutoService {
-  private produtos: Array<Produto>
+ private produtosUrl = "api/produtos";
+ private http: HttpClient; 
+ httpOptions = {
+ headers: new HttpHeaders({'Content-Type': 'application/json'})
+ };
+ constructor(http: HttpClient) { this.http = http; }
 
-  constructor() { this.produtos = new Array<Produto>(); }
- 
-  private getPos(codigo: string): number{
-  for(let i=0; i<this.produtos.length; i++)
-  if(codigo==this.produtos[i].codigo)
-  return i;
-  return -1;
-  }
- 
-  adicionar(produto: Produto): void{
-  this.produtos.push(produto);
-  }
-  remover(codigo: string): void{
-  let pos = this.getPos(codigo);
-  if(pos>-1)
-  this.produtos.splice(pos,1);
-  }
-  obterTodos = ():Array<Produto> => this.produtos;
+ private handleError<T>(operation:string = 'operation', result?: T){
+ return (error: any): Observable<T> => {
+ console.error(operation+" :: "+error); 
+ return of(result as T);
+ };
+ }
+ adicionar(produto: Produto): Observable<Produto>{
+ return this.http.post<Produto>(this.produtosUrl, produto, 
+ this.httpOptions).pipe(
+ tap((novo: Produto) => 
+ console.log(`Adicionado id=${novo.id}`)),
+ catchError(this.handleError<Produto>('adicionar'))
+ );
+ }
+ remover(id: number): Observable<Produto>{
+ const url = `${this.produtosUrl}/${id}`;
+ return this.http.delete<Produto>(url, this.httpOptions).pipe(
+ tap(_ => console.log(`Removido id=${id}`)),
+ catchError(this.handleError<Produto>('remover'))
+ );
+ }
+ obterTodos():Observable<Produto[]> {
+ return this.http.get<Produto[]>(this.produtosUrl).pipe(
+ tap(_ => console.log('Produtos recuperados')),
+ catchError(this.handleError<Produto[]>('obterTodos', []))
+ );
+ }
 }

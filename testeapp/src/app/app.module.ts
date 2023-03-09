@@ -12,6 +12,11 @@ import { NovProdComponent } from './nov-prod/nov-prod.component';
 import { LoginService } from './login.service';
 import { ProdutoService } from './produto.service';
 import { LoginComponent } from './login/login.component';
+
+import { HttpClientModule } from '@angular/common/http';
+import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
+import { ProdutoServidorService } from './produto-servidor.service'
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -25,8 +30,14 @@ import { LoginComponent } from './login/login.component';
   imports: [
     BrowserModule,
     FormsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule,
+    HttpClientInMemoryWebApiModule.forRoot(
+    ProdutoServidorService, 
+    { dataEncapsulation: false }
+    )
   ],
+  
   providers: [ProdutoService, LoginService],
   bootstrap: [AppComponent]
 })

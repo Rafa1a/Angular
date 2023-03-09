@@ -12,15 +12,18 @@ export class NovProdComponent implements OnInit {
  router: Router;
  servProd: ProdutoService;
  produto: Produto = new Produto();
-
+ enviando: boolean = false;
  constructor(router: Router, servProd: ProdutoService) {
  this.router = router;
  this.servProd = servProd;
  }
  incluir():void{
- this.servProd.adicionar(this.produto);
+ this.enviando = true;
+ this.servProd.adicionar(this.produto)
+ .subscribe(_=> {
+ this.enviando = false;
  this.router.navigateByUrl("/produto")
+ });
  }
- ngOnInit(): void {
- }
+ ngOnInit(): void { }
 }

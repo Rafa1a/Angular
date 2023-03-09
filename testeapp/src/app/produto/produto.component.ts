@@ -12,15 +12,17 @@ export class ProdutoComponent implements OnInit {
  router: Router;
  servProd: ProdutoService;
  produtos: Array<Produto> = [];
-
  constructor(router: Router, servProd: ProdutoService) {
  this.router = router;
  this.servProd = servProd;
  }
  incluir():void{ this.router.navigateByUrl("/novoprod"); }
- excluir(codigo: string):void{
- this.servProd.remover(codigo);
- this.router.navigateByUrl("/produto");
+ private obterTodos(){
+ this.servProd.obterTodos()
+ .subscribe((produtos)=>this.produtos=produtos);
  }
- ngOnInit(): void { this.produtos = this.servProd.obterTodos(); }
+ excluir(id: number):void{
+ this.servProd.remover(id).subscribe(_=>this.obterTodos());
+ }
+ ngOnInit(): void { this.obterTodos(); }
 }
