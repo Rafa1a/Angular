@@ -37,5 +37,13 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+var app = express();
+
+const cors = require('cors');
+app.use(cors({
+ origin: 'http://localhost:4200'
+}));
 
 module.exports = app;
+
+

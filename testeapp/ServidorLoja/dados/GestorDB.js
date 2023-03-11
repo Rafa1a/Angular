@@ -1,7 +1,7 @@
 const mongoClient = require("mongodb").MongoClient;
 const ObjectId = require('mongodb').ObjectId;
 
-mongoClient.connect("mongodb://127.0.0.1", 
+mongoClient.connect("mongodb+srv://rafa:1234@testapi.jcrhfdr.mongodb.net/?retryWrites=true&w=majority", 
  {useUnifiedTopology: true})
  .then(conn => global.conn = conn.db("loja"))
  .catch(err => console.log(err))
@@ -21,5 +21,15 @@ function deleteOne(chave) {
  return global.conn.collection("produtos")
  .deleteOne({_id: ObjectId(chave)});
 }
+function createUser(usuario){
+ return global.conn.collection("usuarios")
+ .insertOne(usuario); 
+}
+function findUser(login,senha){
+ return global.conn.collection("usuarios")
+ .findOne({login, senha});
+}
 
-module.exports = { findAll, insert, deleteOne, findOne }  
+module.exports = { findAll, insert, deleteOne, findOne, 
+ createUser, findUser }
+

@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-
+ 
 router.get('/produto', async (req, res) => {
  try {
  const docs = await global.db.findAll();
